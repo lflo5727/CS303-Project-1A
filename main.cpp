@@ -7,13 +7,14 @@
 /////////////////////////////////////////////
 
 #include <iostream>
-
+#include "testClass.h"
 
 using namespace std;
 
 int main()
 {
-    cout << "Hello world!" << endl;
+    testClass potato;
+    cout << potato.getData() << endl;
     return 0;
 
 }

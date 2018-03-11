@@ -21,10 +21,12 @@ class infixEval
         stack<char> operandStack;
         static const int ORDER[];
         static const string OPERATORS;
+        static const string OPENING;
 
 
         //Functions
         bool isOperator(char ch);
+        bool isOpening(char pa);
         int evalOperands(char operate);
         int precedence(char op);
 

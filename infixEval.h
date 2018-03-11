@@ -11,20 +11,28 @@
 #include <string>
 #include <stack>
 
+using namespace std;
+
 class infixEval
 {
     private:
         //Data
-        std::stack<char> opStack;
+        stack<char> operatorStack;
+        stack<char> operandStack;
+        static const int ORDER[];
+        static const string OPERATORS;
+
 
         //Functions
-        int evalOperator(char op);
-        int precedence(char op);
         bool isOperator(char ch);
+        int evalOperands(char operate);
+        int precedence(char op);
+
 
 
     public:
-        infixEval();
+        int eval(const string& infixEx);
+
 };
 
 #endif // INFIXEVAL_H

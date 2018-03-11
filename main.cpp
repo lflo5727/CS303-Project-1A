@@ -15,7 +15,11 @@ using namespace std;
 
 int main()
 {
-
+    string expression;
+    infixEval evaluator;
+    cout << "Please input infix expression to evaluate: \n";
+    cin >> expression;
+    cout << evaluator.eval(expression) << endl;
     return 0;
 
 }

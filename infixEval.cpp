@@ -6,8 +6,10 @@
 //
 /////////////////////////////////////////////
 #include "infixEval.h"
+#include "errorHandle.h"
 #include <string>
 #include <stack>
+
 
 const int infixEval::ORDER[] = { 1, 1, 2, 2, 2, -1, -1, -1, -1, -1, -1 };
 const string infixEval::OPERATORS = "+-*/%()[]{}";
@@ -23,12 +25,33 @@ int infixEval::precedence(char op){
 }
 
 int infixEval::evalOperands(char operate){
-/*
-    pop top two from operands
-    throw error if stack is empty
-    depending on operator, return result of operand1 operator operand2
-*/
+//Evaluates a single operation using the current operator and the top two
+//items from the operand stack
+    int result;
+    int rightOp = operandStack.top();
+    operandStack.pop();
 
+    int leftOP = operandStack.top();
+    operandStack.pop();
+
+    switch(operate){
+        case '+':
+            result = leftOP + rightOp;
+            break;
+        case '-':
+            result = leftOP - rightOp;
+            break;
+        case '*':
+            result = leftOP * rightOp;
+            break;
+        case '/':
+            result = leftOP / rightOp;
+            break;
+        case '%':
+            result = leftOP % rightOp;
+            break;
+    }
+    return result;
 
 }
 

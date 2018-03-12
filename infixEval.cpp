@@ -11,7 +11,6 @@
 #include <stack>
 #include <sstream>
 
-
 const int infixEval::ORDER[] = { 1, 1, 2, 2, 2, -1, -1, -1, -1, -1, -1 };
 const string infixEval::OPERATORS = "+-*/%()[]{}";
 const string infixEval::OPENING = "([{";
@@ -72,17 +71,51 @@ int infixEval::eval(const string& infixEx){
             int num = next - '0';
             //Convert to int as otherwise it uses ASCII index for math
             operandStack.push(num);
+        }else if(next == '}' || next == '}' || next == ')'){
+            //Switch to deal with parentheses
+            switch(next){
+                case '}':
+                    while(!operatorStack.empty()){
+                        if(operatorStack.top() == '{')
+                           break;
+                        char oper = operatorStack.top();
+                        operatorStack.pop();
+
+                        int result = evalOperands(oper);
+                        operandStack.push(result);
+                    }
+                    operatorStack.pop();
+                    break;
+                case ']':
+                    while(!operatorStack.empty()){
+                        if(operatorStack.top() == '[')
+                           break;
+                        char oper = operatorStack.top();
+                        operatorStack.pop();
+
+                        int result = evalOperands(oper);
+                        operandStack.push(result);
+                    }
+                    operatorStack.pop();
+                    break;
+                case ')':
+                    while(!operatorStack.empty()){
+                        if(operatorStack.top() == '(')
+                           break;
+                        char oper = operatorStack.top();
+                        operatorStack.pop();
+
+                        int result = evalOperands(oper);
+                        operandStack.push(result);
+                    }
+                    operatorStack.pop();
+                    break;
+            }
+
         }else if(isOperator(next)){
             //Handle operators in the expression
-            /*while(!operatorStack.empty() && precedence(next) <= precedence(operatorStack.top())){
-                char oper = operatorStack.top();
-                operatorStack.pop();
 
-                int result = evalOperands(oper);
-                operandStack.push(result);
-            }
-            operatorStack.push(next);*/
-            if(operatorStack.empty() || precedence(next) > precedence(operatorStack.top())){
+            if(operatorStack.empty() || precedence(next) > precedence(operatorStack.top()) || isOpening(next)){
                operatorStack.push(next);
             }else{
                 while(!operatorStack.empty()){
@@ -94,41 +127,6 @@ int infixEval::eval(const string& infixEx){
                 }
                 operatorStack.push(next);
             }
-        }else if(next == '}' || next == '}' || next == ')'){
-            //Switch to deal with parentheses
-            switch(next){
-                case '}':
-                    while(operatorStack.top() != '{'){
-                        char oper = operatorStack.top();
-                        operatorStack.pop();
-
-                        int result = evalOperands(oper);
-                        operandStack.push(result);
-                    }
-                    operatorStack.pop();
-                case ']':
-                    while(operatorStack.top() != '['){
-                        char oper = operatorStack.top();
-                        operatorStack.pop();
-
-                        int result = evalOperands(oper);
-                        operandStack.push(result);
-                    }
-                    operatorStack.pop();
-                case ')':
-                    while(operatorStack.top() != '('){
-                        char oper = operatorStack.top();
-                        operatorStack.pop();
-
-                        int result = evalOperands(oper);
-                        operandStack.push(result);
-                    }
-                    operatorStack.pop();
-
-            }
-
-
-
         }
 
     }
@@ -141,7 +139,6 @@ int infixEval::eval(const string& infixEx){
     }
     int evaluation = operandStack.top();
     operandStack.pop();
-
     return evaluation;
 
 }

@@ -18,7 +18,7 @@ class infixEval
     private:
         //Data
         stack<char> operatorStack;
-        stack<char> operandStack;
+        stack<int> operandStack;
         static const int ORDER[];
         static const string OPERATORS;
         static const string OPENING;

@@ -63,14 +63,24 @@ int infixEval::evalOperands(char operate){
 int infixEval::eval(const string& infixEx){
 
     istringstream tokens(infixEx);
-    char next;
+    char next, prev = '+';
     //Travel through tokens of string till end
     while(tokens >> next){
         if(!isOperator(next)){
-            //Add operands and opening brackets to operand stack
             int num = next - '0';
             //Convert to int as otherwise it uses ASCII index for math
-            operandStack.push(num);
+            if(!isOperator(prev)){
+                //Checks if previous token was an int so it can handle numbers with >1 digits
+                int tens = (operandStack.top() * 10);
+                operandStack.pop();
+
+                int res = tens + num;
+                operandStack.push(res);
+            }
+            else{
+                operandStack.push(num);
+            }
+
         }else if(next == '}' || next == '}' || next == ')'){
             //Switch to deal with parentheses
             switch(next){
@@ -128,7 +138,7 @@ int infixEval::eval(const string& infixEx){
                 operatorStack.push(next);
             }
         }
-
+        prev = next;
     }
     while(!operatorStack.empty()){
         char op = operatorStack.top();

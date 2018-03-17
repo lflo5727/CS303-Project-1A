@@ -15,6 +15,7 @@
 const int infixEval::ORDER[] = { 1, 1, 2, 2, 2, -1, -1, -1, -1, -1, -1 };
 const string infixEval::OPERATORS = "+-*%/()[]{}";
 const string infixEval::OPENING = "([{";
+const string infixEval::PAREN = "()[]{}";
 
 bool infixEval::isOperator(char op){
     //return 1 if op exists in operators string, 0 if not
@@ -23,6 +24,10 @@ bool infixEval::isOperator(char op){
 
 bool infixEval::isOpening(char pa){
     return OPENING.find(pa) != string::npos;
+}
+
+bool infixEval::isParen(char pa){
+    return PAREN.find(pa) != string::npos;
 }
 
 int infixEval::precedence(char op){
@@ -71,13 +76,14 @@ int infixEval::evalOperands(char operate){
 int infixEval::eval(const string& infixEx){
 
     istringstream tokens(infixEx);
-    char next, prev = '+';
+    //use b char to avoid conflict with error handling that uses prev
+    char next, prev = 'b';
     //Travel through tokens of string till end
     while(tokens >> next){
         if(!isOperator(next)){
             int num = next - '0';
             //Convert to int as otherwise it uses ASCII index for math
-            if(!isOperator(prev)){
+            if(!isOperator(prev) && prev != 'b'){
                 //Checks if previous token was an int so it can handle numbers with >1 digits
                 int tens = (operandStack.top() * 10);
                 operandStack.pop();
@@ -135,8 +141,9 @@ int infixEval::eval(const string& infixEx){
 
         }else if(isOperator(next)){
             //Handle operators in the expression
-            if (isOperator(prev))
+            if (isOperator(prev) && isParen(prev)){
                 throw errorHandle("Can't have two binary operators in a row.");
+            }
             else if(operatorStack.empty() || precedence(next) > precedence(operatorStack.top()) || isOpening(next)){
                operatorStack.push(next);
             }else{

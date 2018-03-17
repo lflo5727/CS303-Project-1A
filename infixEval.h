@@ -23,11 +23,13 @@ class infixEval
         static const int ORDER[];
         static const string OPERATORS;
         static const string OPENING;
+        static const string PAREN;
 
 
         //Functions
         bool isOperator(char ch);
         bool isOpening(char pa);
+        bool isParen(char pa);
         int evalOperands(char operate);
         int precedence(char op);
 

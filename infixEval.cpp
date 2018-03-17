@@ -150,8 +150,6 @@ int infixEval::eval(const string& infixEx){
                 operatorStack.push(next);
             }
         }
-        else if (next==' ')
-            {}
         prev = next;
     }
     while(!operatorStack.empty()){

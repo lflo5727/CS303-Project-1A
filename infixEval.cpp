@@ -5,6 +5,7 @@
 //     Project 1A - Infix Expression Parser
 //
 /////////////////////////////////////////////
+
 #include "infixEval.h"
 #include "errorHandle.h"
 #include <string>
@@ -12,7 +13,7 @@
 #include <sstream>
 
 const int infixEval::ORDER[] = { 1, 1, 2, 2, 2, -1, -1, -1, -1, -1, -1 };
-const string infixEval::OPERATORS = "+-*/%()[]{}";
+const string infixEval::OPERATORS = "+-*%/()[]{}";
 const string infixEval::OPENING = "([{";
 
 bool infixEval::isOperator(char op){
@@ -32,10 +33,15 @@ int infixEval::precedence(char op){
 int infixEval::evalOperands(char operate){
 //Evaluates a single operation using the current operator and the top two
 //items from the operand stack
+    if (operandStack.empty())
+    {
+        throw errorHandle("Stack is empty");
+    }
     int result = 0;
     int rightOp = operandStack.top();
     operandStack.pop();
-
+    if (operandStack.empty())
+        throw errorHandle("Stack is empty");
     int leftOP = operandStack.top();
     operandStack.pop();
 
@@ -50,6 +56,8 @@ int infixEval::evalOperands(char operate){
             result += leftOP * rightOp;
             break;
         case '/':
+            if (rightOp==0)
+                throw errorHandle("Cannot divide by zero");
             result += leftOP / rightOp;
             break;
         case '%':
@@ -63,16 +71,29 @@ int infixEval::evalOperands(char operate){
 int infixEval::eval(const string& infixEx){
 
     istringstream tokens(infixEx);
-    char next;
+    char next, prev = '+';
     //Travel through tokens of string till end
     while(tokens >> next){
         if(!isOperator(next)){
-            //Add operands and opening brackets to operand stack
             int num = next - '0';
             //Convert to int as otherwise it uses ASCII index for math
-            operandStack.push(num);
+            if(!isOperator(prev)){
+                //Checks if previous token was an int so it can handle numbers with >1 digits
+                int tens = (operandStack.top() * 10);
+                operandStack.pop();
+
+                int res = tens + num;
+                operandStack.push(res);
+            }
+            else{
+                operandStack.push(num);
+            }
+
         }else if(next == '}' || next == '}' || next == ')'){
             //Switch to deal with parentheses
+            if (operatorStack.empty()){
+                throw errorHandle("Expression can't start with a closing parenthesis.");
+            }
             switch(next){
                 case '}':
                     while(!operatorStack.empty()){
@@ -114,8 +135,9 @@ int infixEval::eval(const string& infixEx){
 
         }else if(isOperator(next)){
             //Handle operators in the expression
-
-            if(operatorStack.empty() || precedence(next) > precedence(operatorStack.top()) || isOpening(next)){
+            if (isOperator(prev))
+                throw errorHandle("Can't have two binary operators in a row.");
+            else if(operatorStack.empty() || precedence(next) > precedence(operatorStack.top()) || isOpening(next)){
                operatorStack.push(next);
             }else{
                 while(!operatorStack.empty()){
@@ -128,7 +150,9 @@ int infixEval::eval(const string& infixEx){
                 operatorStack.push(next);
             }
         }
-
+        else if (next==' ')
+            {}
+        prev = next;
     }
     while(!operatorStack.empty()){
         char op = operatorStack.top();

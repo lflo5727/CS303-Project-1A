@@ -8,6 +8,7 @@
 
 #ifndef INFIXEVAL_H
 #define INFIXEVAL_H
+#include "errorHandle.h"
 #include <string>
 #include <stack>
 

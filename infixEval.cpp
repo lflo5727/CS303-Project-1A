@@ -75,14 +75,18 @@ int infixEval::evalOperands(char operate){
 
 int infixEval::eval(const string& infixEx){
 
-    istringstream tokens(infixEx);
+    stringstream tokens(infixEx);
     //use b char to avoid conflict with error handling that uses prev
-    char next, prev = 'b';
+    char next, prev = 'b', prev2='b';
     //Travel through tokens of string till end
-    while(tokens >> next){
+    while(tokens >> noskipws >> next){
         if(!isOperator(next)){
             int num = next - '0';
             //Convert to int as otherwise it uses ASCII index for math
+            if(prev==char(32) && !isOperator(prev2) && prev2!='b')
+            {
+                throw errorHandle("Two operands in a row.");
+            }
             if(!isOperator(prev) && prev != 'b'){
                 //Checks if previous token was an int so it can handle numbers with >1 digits
                 int tens = (operandStack.top() * 10);
@@ -95,7 +99,7 @@ int infixEval::eval(const string& infixEx){
                 operandStack.push(num);
             }
 
-        }else if(next == '}' || next == '}' || next == ')'){
+        }else if(next == '}' || next == ']' || next == ')'){
             //Switch to deal with parentheses
             if (operatorStack.empty()){
                 throw errorHandle("Expression can't start with a closing parenthesis.");
@@ -157,7 +161,9 @@ int infixEval::eval(const string& infixEx){
                 operatorStack.push(next);
             }
         }
-        prev = next;
+            prev2=prev;
+            prev = next;
+
     }
     while(!operatorStack.empty()){
         char op = operatorStack.top();

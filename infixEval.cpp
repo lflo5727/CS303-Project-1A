@@ -5,7 +5,8 @@
 //     Project 1A - Infix Expression Parser
 //
 /////////////////////////////////////////////
-
+using namespace std;
+#include <iostream>
 #include "infixEval.h"
 #include "errorHandle.h"
 #include <string>
@@ -87,7 +88,7 @@ int infixEval::eval(const string& infixEx){
             {
                 throw errorHandle("Two operands in a row.");
             }
-            if(!isOperator(prev) && prev != 'b'){
+            if(!isOperator(prev) && prev != 'b' && prev!=char(32) && next!=' '){
                 //Checks if previous token was an int so it can handle numbers with >1 digits
                 int tens = (operandStack.top() * 10);
                 operandStack.pop();
@@ -96,7 +97,10 @@ int infixEval::eval(const string& infixEx){
                 operandStack.push(res);
             }
             else{
+                if (num>=0&&num<=9){
                 operandStack.push(num);
+                }
+
             }
 
         }else if(next == '}' || next == ']' || next == ')'){
@@ -174,6 +178,7 @@ int infixEval::eval(const string& infixEx){
     }
     int evaluation = operandStack.top();
     operandStack.pop();
+
     return evaluation;
 
 }

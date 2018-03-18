@@ -8,7 +8,6 @@
 
 #include <iostream>
 #include <string>
-#include <stack>
 #include "infixEval.h"
 
 using namespace std;

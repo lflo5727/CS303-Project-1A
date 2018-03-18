@@ -1,3 +1,10 @@
+/////////////////////////////////////////////
+//
+//                  CS303
+//             Od P and Liam F
+//     Project 1A - Infix Expression Parser
+//
+/////////////////////////////////////////////
 #ifndef ERRORHANDLE_H
 #define ERRORHANDLE_H
 #include <stdexcept>

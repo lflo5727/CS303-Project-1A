@@ -24,10 +24,12 @@ bool infixEval::isOperator(char op){
 }
 
 bool infixEval::isOpening(char pa){
+    //return 1 if char is an opening bracket
     return OPENING.find(pa) != string::npos;
 }
 
 bool infixEval::isParen(char pa){
+    //return 1 if char is a bracket of any kind
     return PAREN.find(pa) != string::npos;
 }
 
@@ -104,10 +106,10 @@ int infixEval::eval(const string& infixEx){
             }
 
         }else if(next == '}' || next == ']' || next == ')'){
-            //Switch to deal with parentheses
             if (operatorStack.empty()){
                 throw errorHandle("Expression can't start with a closing parenthesis.");
             }
+            //Switch to deal with parentheses
             switch(next){
                 case '}':
                     while(!operatorStack.empty()){
@@ -170,6 +172,7 @@ int infixEval::eval(const string& infixEx){
 
     }
     while(!operatorStack.empty()){
+        //Empties out operator stack to ensure entire expression is handled
         char op = operatorStack.top();
         operatorStack.pop();
 
